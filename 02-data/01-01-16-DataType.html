@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>객체의 깊은 복사를 수행하는 범용 함수</title>
+</head>
+<body>
+	<script>
+		var copyObjectDeep = function(target) {
+			var result = {};
+			if(typeof target === 'object' && target !== null) {
+				for(var prop in target) {
+					result[prop] = copyObjectDeep(target[prop]);
+				}
+			}
+			else {
+				result = target;
+			}
+			return result;
+		};
+
+		var user = {
+			name : 'Kildong',
+			urls : {
+				portfolio: 'http://cafe.naver.com/wepub',
+				blog : 'http://blog.naver.com/webazit',
+				facebook : 'http://facebook.com/webazit'
+			}
+		};
+
+		var user2 = copyObjectDeep(user);
+		user2.urls = copyObjectDeep(user.urls);
+
+		user.urls.portfolio = 'http://google.com/';
+		console.log(user.urls.portfolio === user2.urls.portfolio);
+
+		user2.urls.blog = '';
+		console.log(user.urls.blog === user2.urls.blog);
+	</script>
+</body>
+</html>
