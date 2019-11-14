@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ajax Type Ahead</title>
+    <link rel="stylesheet" href="./css/lee.css">
+</head>
+<body>
+    
+    <input type="text" class="search">
+    <hr>
+    <ul class="suggestions"></ul>
+
+    <script>
+        const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+        const cities = [];
+        // let cities = [];
+        
+        // const prom = fetch(endpoint);
+        // console.log(prom);
+
+        // fetch(endpoint).then(blob => console.log(blob));
+        fetch(endpoint)
+            .then(blob => blob.json())
+            .then(data => cities.push(...data))
+        
+        function findMatches(wordToMatch, cities) {
+            return cities.filter(place => {
+                // here we need to figure out if the city or state matches what was searched
+                // 여기서 우리는 도시나 주가 검색된 것과 일치하는지 알아내야 한다.
+                const regex = new RegExp(wordToMatch, 'gi');
+                return place.city.match(regex) || place.state.match(regex)
+            });
+        }
+
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function displayMatches() {
+            // console.log(this.value);
+            const matchArray = findMatches(this.value, cities);
+            // console.log(matchArray);
+            const html = matchArray.map(place => {
+                const regex = new RegExp(this.value, 'gi');
+                const cityName = place.city.replace(regex, `<span class="hi">${this.value}</span>`);
+                const stateName = place.state.replace(regex, `<span class="hi">${this.value}</span>`);
+                return `
+                    <li>
+                        <span class="name">${cityName}, ${stateName}</span>
+                        <span class="population">${numberWithCommas(place.population)}</span>
+                    </li>
+                `;
+            }).join('');
+            suggestions.innerHTML = html;
+        }
+
+        const searchInput = document.querySelector('.search');
+        const suggestions = document.querySelector('.suggestions');
+
+        searchInput.addEventListener('change', displayMatches);
+        searchInput.addEventListener('keyup', displayMatches);
+    </script>
+</body>
+</html>
