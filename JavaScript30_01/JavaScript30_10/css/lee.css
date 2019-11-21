@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+.inbox {
+    width: 600px;
+    margin: 0 auto;
+}
+.inbox .item {
+    padding-left: 15px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+}
+.inbox .item input {
+    margin-right: 15px;
+}
